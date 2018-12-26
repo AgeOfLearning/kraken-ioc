@@ -1,0 +1,30 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <!--*-->
+    <id>$id$</id>
+    <!--*-->
+    <version>$version$</version>
+    <title></title>
+    <!--*-->
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <!--*-->
+    <description>$description$</description>
+    <!--*-->
+    <releaseNotes>
+    - Added IContainer.Bind TInterface, TImplementation
+    - Added IBinding.FromFactory and IBinding.FromFactoryMethod
+    - Added category support for Inject attribute when used within constructor, static constructor method or a method
+    - Added IContainer.HasBindingForCategory
+    </releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags> </tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$unityPackagePath$" target="unity"/>
+  </files>
+</package>

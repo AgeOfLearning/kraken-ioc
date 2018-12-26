@@ -1,0 +1,8 @@
+{
+    "unity_target_path": "Editor", 
+    "include": [], 
+    "nuget_feeds": {
+        "debug": "https://proget.aofl.com/nuget/AOFL-Unity-Development/", 
+        "release": "https://proget.aofl.com/nuget/AOFL-Unity/"
+    }
+}

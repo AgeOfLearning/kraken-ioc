@@ -1,0 +1,6 @@
+{
+    "output_dir": "Output",
+    "unity_project_path": "../../UnityProjects/KrakenIoc.Unity",
+    "clean": true,
+    "feed": "https://api.nuget.org/v3/index.json"
+}

@@ -1,0 +1,15 @@
+os: osx
+language: csharp
+dotnet: 2.1.300
+mono: latest
+env:
+  - NUGET_PATH="/Library/Frameworks/Mono.framework/Versions/Current/Commands/nuget"
+before_install:
+  - chmod a+x ./Scripts/*.sh
+install:
+  - nuget restore ./KrakenIoc/KrakenIoc.sln
+  - pip install ugetcli
+  - nuget setapikey $NUGET_API_KEY -Source https://api.nuget.org/v3/index.json 
+script: 
+  - ./Scripts/test.sh
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then ./Scripts/deploy.sh; fi

@@ -1,0 +1,5 @@
+﻿<linker>
+  <assembly fullname="KrakenIoc">
+    <type fullname="AOFL.KrakenIoc.*" preserve="all"/>
+  </assembly>
+</linker>

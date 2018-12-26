@@ -1,0 +1,5 @@
+﻿<linker>
+  <assembly fullname="KrakenIoc">
+    <type fullname="AOFL.KrakenIoc.Core.V1.CommandDispatcher" preserve="all"/>
+  </assembly>
+</linker>
