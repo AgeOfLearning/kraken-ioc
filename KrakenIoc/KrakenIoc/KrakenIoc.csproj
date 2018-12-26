@@ -85,11 +85,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="build.properties.json" />
     <None Include="KrakenIoc.nuspec" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="link.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

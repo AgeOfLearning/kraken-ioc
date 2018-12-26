@@ -14,12 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KrakenIoc.UnitTests", "Krak
 		{323431E6-90CC-47A4-B03F-80D82CAF68D5} = {323431E6-90CC-47A4-B03F-80D82CAF68D5}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KrakenIoc.Testing", "Kraken.Testing\KrakenIoc.Testing.csproj", "{5A8A8311-CC27-44CB-B57F-10B1A6FF8914}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F1934CBB-A8C1-48D3-BFF5-A46EBAFBADCA} = {F1934CBB-A8C1-48D3-BFF5-A46EBAFBADCA}
-		{323431E6-90CC-47A4-B03F-80D82CAF68D5} = {323431E6-90CC-47A4-B03F-80D82CAF68D5}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,14 +54,6 @@ Global
 		{F1934CBB-A8C1-48D3-BFF5-A46EBAFBADCA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F1934CBB-A8C1-48D3-BFF5-A46EBAFBADCA}.Release-Publish|Any CPU.ActiveCfg = Release-Publish|Any CPU
 		{F1934CBB-A8C1-48D3-BFF5-A46EBAFBADCA}.Release-Publish|Any CPU.Build.0 = Release-Publish|Any CPU
-		{5A8A8311-CC27-44CB-B57F-10B1A6FF8914}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A8A8311-CC27-44CB-B57F-10B1A6FF8914}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A8A8311-CC27-44CB-B57F-10B1A6FF8914}.Debug-Publish|Any CPU.ActiveCfg = Debug-Publish|Any CPU
-		{5A8A8311-CC27-44CB-B57F-10B1A6FF8914}.Debug-Publish|Any CPU.Build.0 = Debug-Publish|Any CPU
-		{5A8A8311-CC27-44CB-B57F-10B1A6FF8914}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A8A8311-CC27-44CB-B57F-10B1A6FF8914}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5A8A8311-CC27-44CB-B57F-10B1A6FF8914}.Release-Publish|Any CPU.ActiveCfg = Release-Publish|Any CPU
-		{5A8A8311-CC27-44CB-B57F-10B1A6FF8914}.Release-Publish|Any CPU.Build.0 = Release-Publish|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

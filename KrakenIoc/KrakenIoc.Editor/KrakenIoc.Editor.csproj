@@ -70,7 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kraken\KrakenIoc.csproj">
+    <ProjectReference Include="..\KrakenIoc\KrakenIoc.csproj">
       <Project>{bb35baa3-d3c9-484e-a954-3f10cbb1320a}</Project>
       <Name>KrakenIoc</Name>
     </ProjectReference>
