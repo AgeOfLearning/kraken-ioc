@@ -1,4 +1,11 @@
 # Kraken Inversion of Control
+[travis-ci-status]: https://img.shields.io/travis/AgeOfLearning/kraken-ioc.svg
+[nuget-status]: https://img.shields.io/nuget/vpre/KrakenIoc.svg
+
+[![travis][travis-ci-status]](https://travis-ci.org/AgeOfLearning/kraken-ioc)
+[![nuget][nuget-status]](https://www.nuget.org/packages/KrakenIoc/)
+
+## About
 Inversion of Control is a design principle in modern software applications. Kraken is a dependency injection framework with extensibility built-in.
 
 ### Table of Contents
