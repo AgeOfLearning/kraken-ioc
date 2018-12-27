@@ -18,8 +18,11 @@
     <tags> </tags>
     <dependencies>
     </dependencies>
+    <contentFiles>
+      <file src="$unityPackagePath$" target="content\unity" buildAction="None"/>
+    </contentFiles>
   </metadata>
   <files>
-    <file src="$unityPackagePath$" target="unity"/>
+    <file src="$unityPackagePath$" target="content\unity"/>
   </files>
 </package>
