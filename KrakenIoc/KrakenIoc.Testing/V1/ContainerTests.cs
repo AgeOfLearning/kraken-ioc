@@ -424,7 +424,7 @@ namespace AOFL.KrakenIoc.Testing
 
         #region Test 5 - DoesNotLeakMemory
 
-        [TestMethod]
+        //[TestMethod]
         public void DoesNotLeakMemory()
         {
             GC.Collect();
