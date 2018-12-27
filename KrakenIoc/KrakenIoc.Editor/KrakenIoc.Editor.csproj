@@ -78,8 +78,5 @@
   <ItemGroup>
     <None Include="KrakenIoc.Editor.nuspec" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="link.xml" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -23,8 +23,11 @@
     <tags> </tags>
     <dependencies>
     </dependencies>
+    <contentFiles>
+      <files include="**/unity/*.unitypackage" buildAction="EmbeddedResource"/>
+    </contentFiles>
   </metadata>
   <files>
-    <file src="$unityPackagePath$" target="content\unity"/>
+    <file src="$unityPackagePath$" target="contentFiles\unity"/>
   </files>
 </package>
