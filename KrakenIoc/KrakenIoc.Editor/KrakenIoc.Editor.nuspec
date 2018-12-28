@@ -20,6 +20,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$unityPackagePath$" target="unity"/>
+    <file src="$unityPackagePath$" target="unityPackages"/>
+    <file src="$unityPackageExportRoot$/**/*" target="lib/unity"/>
   </files>
 </package>
