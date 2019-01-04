@@ -1,7 +1,7 @@
 {
     "output_dir": "Output",
     "unity_project_path": "../../UnityProjects/KrakenIoc.Editor",
-    "unitypackage_root_path_relative": "KrakenIoc.Editor/Editor",
+    "assembly_relative_dir": "Editor",
     "clean": true,
     "feed": "https://api.nuget.org/v3/index.json"
 }
