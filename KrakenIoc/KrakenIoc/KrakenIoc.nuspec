@@ -14,10 +14,7 @@
     <description>$description$</description>
     <!--*-->
     <releaseNotes>
-    - Added IContainer.Bind TInterface, TImplementation
-    - Added IBinding.FromFactory and IBinding.FromFactoryMethod
-    - Added category support for Inject attribute when used within constructor, static constructor method or a method
-    - Added IContainer.HasBindingForCategory
+    - IContainer.Bind(T value) assigns IBinding as Singleton by default.
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags> </tags>

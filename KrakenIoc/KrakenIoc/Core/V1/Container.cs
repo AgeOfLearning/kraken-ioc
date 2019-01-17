@@ -86,6 +86,7 @@ namespace AOFL.KrakenIoc.Core.V1
         {
             IBinding binding = Bind<T>(typeof(T));
             binding.BoundObjects.Add(value);
+            binding.AsSingleton();
 
             return binding;
         }
