@@ -20,6 +20,9 @@
     <tags> </tags>
     <dependencies>
     </dependencies>
+    <projectUrl>https://github.com/AgeOfLearning/kraken-ioc</projectUrl>
+    <repository type="git"
+               url="https://github.com/AgeOfLearning/kraken-ioc"/>
   </metadata>
   <files>
     <file src="$unityPackagePath$" target="unityPackages"/>
