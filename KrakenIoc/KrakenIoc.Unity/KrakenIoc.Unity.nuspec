@@ -25,5 +25,6 @@
   <files>
     <file src="$unityPackagePath$" target="unityPackages"/>
     <file src="$unityPackageExportRoot$/**/*" target="lib/unity"/>
+    <file src="**/*.cs" target="source"/>
   </files>
 </package>
