@@ -473,7 +473,8 @@ namespace AOFL.KrakenIoc.Core.V1
 
                     object propertyValue = _container.ResolveWithCategory(property.PropertyType, memberCache.InjectAttribute.Category, injectContext);
                     
-                    property.SetValue(objValue, propertyValue, null);
+                    PropertyInfo strongProperty = property.DeclaringType.GetProperty(property.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    strongProperty.SetValue(objValue, propertyValue, null);
                 }
             }
 
