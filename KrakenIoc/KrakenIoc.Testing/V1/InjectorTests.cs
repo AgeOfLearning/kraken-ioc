@@ -22,6 +22,23 @@ namespace AOFL.KrakenIoc.Testing.V1
 
         }
     }
+    
+    internal interface ISomeInjectedType { }
+
+    internal class SomeInjectedType : ISomeInjectedType { }
+
+    internal interface ISomeClientType
+    {
+        ISomeInjectedType InjectedInstance { get; }
+    }
+
+    internal class SomeClientTypeBase : ISomeClientType
+    {
+        [Inject] public ISomeInjectedType InjectedInstance { get; private set; }
+    }
+
+    internal class SomeClientTypeDerived : SomeClientTypeBase { }
+
     #endregion
 
     [TestClass]
@@ -60,6 +77,28 @@ namespace AOFL.KrakenIoc.Testing.V1
 
             var result = container.Resolve<MultipleConstructorTestClass>();
             Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Injector_DoesNotThrowException_WhenPropertyInjectedOnBaseType()
+        {
+            Container container = new Container();
+            container.Bind<ISomeInjectedType>().To<SomeInjectedType>().AsSingleton();
+            container.Bind<ISomeClientType>().To<SomeClientTypeBase> ().AsSingleton ();
+            ISomeClientType client = container.Resolve<ISomeClientType> ();
+
+            Assert.IsNotNull (client.InjectedInstance, "Injected property (from base type) is null on base type instance.");
+        }
+
+        [TestMethod]
+        public void Injector_DoesNotThrowException_WhenPropertyInjectedOnDerivedType()
+        {
+            Container container = new Container();
+            container.Bind<ISomeInjectedType>().To<SomeInjectedType>().AsSingleton();
+            container.Bind<ISomeClientType>().To<SomeClientTypeDerived>().AsSingleton();
+            ISomeClientType client = container.Resolve<ISomeClientType>();
+
+            Assert.IsNotNull(client.InjectedInstance, "Injected property (from base type) is null on derived type instance.");
         }
     }
 }
