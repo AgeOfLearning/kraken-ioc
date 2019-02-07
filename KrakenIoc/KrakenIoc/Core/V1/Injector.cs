@@ -473,8 +473,7 @@ namespace AOFL.KrakenIoc.Core.V1
 
                     object propertyValue = _container.ResolveWithCategory(property.PropertyType, memberCache.InjectAttribute.Category, injectContext);
                     
-                    PropertyInfo strongProperty = property.DeclaringType.GetProperty(property.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                    strongProperty.SetValue(objValue, propertyValue, null);
+                    property.SetValue(objValue, propertyValue, null);
                 }
             }
 
@@ -668,11 +667,12 @@ namespace AOFL.KrakenIoc.Core.V1
 
         protected virtual List<MemberInfoCache> FindPropertiesRecursive(Type type)
         {
-            var fields = new List<MemberInfoCache>();
+            var properties = new List<MemberInfoCache>();
 
-            var subFields = type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            const BindingFlags propertyFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+            var subProperties = type.GetProperties(propertyFlags);
 
-            foreach (var info in subFields)
+            foreach (var info in subProperties)
             {
                 if (!MightHaveInjectAttribute(info))
                 {
@@ -685,27 +685,28 @@ namespace AOFL.KrakenIoc.Core.V1
                 {
                     continue;
                 }
-
-                fields.Add(new MemberInfoCache(info, attrs[0]));
+                
+                PropertyInfo strongInfo = info.DeclaringType.GetProperty(info.Name, propertyFlags);
+                properties.Add(new MemberInfoCache(strongInfo, attrs[0]));
             }
 
             if(IsRootType(type.BaseType))
             {
-                return fields;
+                return properties;
             }
 
             // Continue recursively...
-            var childFields = FindPropertiesRecursive(type.BaseType);
+            var childProperties = FindPropertiesRecursive(type.BaseType);
 
-            foreach (var childInfo in childFields)
+            foreach (var childInfo in childProperties)
             {
-                if (!fields.Contains(childInfo))
+                if (!properties.Contains(childInfo))
                 {
-                    fields.Add(childInfo);
+                    properties.Add(childInfo);
                 }
             }
 
-            return fields;
+            return properties;
         }
         
         /// <summary>
