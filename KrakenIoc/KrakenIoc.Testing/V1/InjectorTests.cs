@@ -94,10 +94,11 @@ namespace AOFL.KrakenIoc.Testing.V1
         [TestMethod]
         public void Injector_DoesNotThrowException_WhenPublicPropertyInjectedOnBaseType()
         {
-            Container container = new Container();
+            var container = new Container();
             container.Bind<ISomeInjectedType>().To<SomeInjectedType>().AsSingleton();
-            Injector injector = new Injector(container);
             ISomeClientType client = new SomeClientTypeBase();
+
+            var injector = new Injector(container);
             injector.Inject(client);
 
             Assert.IsNotNull(client.InjectedInstance, "Injected public property (from base type) is null on base type instance.");
@@ -106,10 +107,11 @@ namespace AOFL.KrakenIoc.Testing.V1
         [TestMethod]
         public void Injector_DoesNotThrowException_WhenPublicPropertyInjectedOnDerivedType()
         {
-            Container container = new Container();
+            var container = new Container();
             container.Bind<ISomeInjectedType>().To<SomeInjectedType>().AsSingleton();
-            Injector injector = new Injector(container);
             ISomeClientType client = new SomeClientTypeDerived();
+
+            var injector = new Injector(container);
             injector.Inject(client);
             
             Assert.IsNotNull(client.InjectedInstance, "Injected public property (from base type) is null on derived type instance.");
@@ -118,10 +120,11 @@ namespace AOFL.KrakenIoc.Testing.V1
         [TestMethod]
         public void Injector_DoesNotThrowException_WhenPrivatePropertyInjectedOnBaseType()
         {
-            Container container = new Container();
+            var container = new Container();
             container.Bind<ISomeInjectedType>().To<SomeInjectedType>().AsSingleton();
-            Injector injector = new Injector(container);
             ISomeClientType client = new SomeOtherClientTypeBase();
+
+            var injector = new Injector(container);
             injector.Inject(client);
 
             Assert.IsNotNull(client.InjectedInstance, "Injected private property (from base type) is null on base type instance.");
@@ -130,10 +133,11 @@ namespace AOFL.KrakenIoc.Testing.V1
         [TestMethod]
         public void Injector_DoesNotThrowException_WhenPrivatePropertyInjectedOnDerivedType()
         {
-            Container container = new Container();
+            var container = new Container();
             container.Bind<ISomeInjectedType>().To<SomeInjectedType>().AsSingleton();
-            Injector injector = new Injector(container);
             ISomeClientType client = new SomeOtherClientTypeDerived();
+
+            var injector = new Injector(container);
             injector.Inject(client);
 
             Assert.IsNotNull(client.InjectedInstance, "Injected private property (from base type) is null on derived type instance.");

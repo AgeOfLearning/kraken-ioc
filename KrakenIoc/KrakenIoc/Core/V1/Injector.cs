@@ -686,7 +686,7 @@ namespace AOFL.KrakenIoc.Core.V1
                     continue;
                 }
                 
-                PropertyInfo strongInfo = info.DeclaringType.GetProperty(info.Name, propertyFlags);
+                var strongInfo = info.DeclaringType.GetProperty(info.Name, propertyFlags);
                 properties.Add(new MemberInfoCache(strongInfo, attrs[0]));
             }
 
