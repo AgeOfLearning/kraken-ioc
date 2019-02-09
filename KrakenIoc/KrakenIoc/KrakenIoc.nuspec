@@ -14,7 +14,7 @@
     <description>$description$</description>
     <!--*-->
     <releaseNotes>
-    - IContainer.Bind(T value) assigns IBinding as Singleton by default.
+    - Fixes bug with private property setter on a derived type.
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags> </tags>
