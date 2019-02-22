@@ -93,6 +93,11 @@ namespace AOFL.KrakenIoc.Core.V1
         
         public IBinding Bind<T>(Type type)
         {
+            if (!typeof(T).IsAssignableFrom(type))
+            {
+                throw new InvalidBindingException($"Can not bind ${typeof(T)} type to type {type}, {type} does not implement {typeof(T)}");
+            }
+
             if (!_bindings.ContainsKey(typeof(T)))
             {
                 _bindings.Add(typeof(T), new BindingCollection());

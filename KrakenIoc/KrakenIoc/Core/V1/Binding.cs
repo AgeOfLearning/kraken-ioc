@@ -208,6 +208,11 @@ namespace AOFL.KrakenIoc.Core.V1
         /// <typeparam name="T">The concrete implementation type.</typeparam>
         public IBinding To<T>()
         {
+            if (!BinderType.IsAssignableFrom(typeof(T)))
+            {
+                throw new InvalidBindingException($"Can not bind ${BinderType} type to type {typeof(T)}, {typeof(T)} does not implement {BinderType}");
+            }
+
             BoundType = typeof(T);
 
             return this;
