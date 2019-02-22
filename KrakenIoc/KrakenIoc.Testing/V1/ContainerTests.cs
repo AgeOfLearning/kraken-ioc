@@ -312,7 +312,7 @@ namespace AOFL.KrakenIoc.Testing
         public void ThrowsExceptionWhenEarlyBoundTypeDoesNotImplementBinderType()
         {
             Container container = new Container();
-            container.Bind<ISomeTypeSeven> (typeof(SomeTypeEightExtended));
+            container.Bind<ISomeTypeSeven>(typeof(SomeTypeEightExtended));
         }
 
         [TestMethod]
@@ -320,7 +320,7 @@ namespace AOFL.KrakenIoc.Testing
         public void ThrowsExceptionWhenLateBoundTypeDoesNotImplementBinderType()
         {
             Container container = new Container();
-            container.Bind<ISomeTypeSeven> ().To<SomeTypeEightExtended> ();
+            container.Bind<ISomeTypeSeven>().To<SomeTypeEightExtended>();
         }
 
         #endregion
