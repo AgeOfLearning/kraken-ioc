@@ -14,7 +14,7 @@
     <description>$description$</description>
     <!--*-->
     <releaseNotes>
-    - Fixes bug with private property setter on a derived type.
+      - Fixes binding incompatible types (both early and late binds)
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags> </tags>
