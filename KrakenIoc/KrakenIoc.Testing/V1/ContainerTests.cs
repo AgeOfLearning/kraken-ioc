@@ -307,6 +307,22 @@ namespace AOFL.KrakenIoc.Testing
             binding.Category = null;
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(InvalidBindingException))]
+        public void ThrowsExceptionWhenEarlyBoundTypeDoesNotImplementBinderType()
+        {
+            Container container = new Container();
+            container.Bind<ISomeTypeSeven> (typeof(SomeTypeEightExtended));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidBindingException))]
+        public void ThrowsExceptionWhenLateBoundTypeDoesNotImplementBinderType()
+        {
+            Container container = new Container();
+            container.Bind<ISomeTypeSeven> ().To<SomeTypeEightExtended> ();
+        }
+
         #endregion
 
         #region Test 2 - DoesResolveSingleton
