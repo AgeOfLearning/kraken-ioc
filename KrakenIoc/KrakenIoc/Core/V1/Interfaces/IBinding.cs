@@ -3,7 +3,13 @@ using System.Collections.Generic;
 
 namespace AOFL.KrakenIoc.Core.V1.Interfaces
 {
-    public delegate T FactoryMethod<T>(IInjectContext injectionContext); 
+    /// <summary>
+    /// Delegate that resolves instance of type T
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="injectionContext"></param>
+    /// <returns></returns>
+    public delegate T FactoryMethod<T>(IInjectContext injectionContext);
 
     /// <summary>
     /// Represents a binding between an interface
@@ -27,14 +33,16 @@ namespace AOFL.KrakenIoc.Core.V1.Interfaces
         /// The lifetime-scope of the binding.
         /// </summary>
         BindingType BindingType { get; set; }
+        
+        /// <summary>
+        /// Array of contracts (interfaces) that this implementation is bound to
+        /// </summary>
+        Type[] BinderTypes { get; set; }
+
         /// <summary>
         /// The concrete type that is bound.
         /// </summary>
         Type BoundType { get; set; }
-        /// <summary>
-        /// The interface that is binding an implementation.
-        /// </summary>
-        Type BinderType { get; set; }
 
         /// <summary>
         /// Category of the binding
@@ -66,15 +74,26 @@ namespace AOFL.KrakenIoc.Core.V1.Interfaces
         IBinding WithCategory(object category);
 
         /// <summary>
-        /// T will be resolved using Factory class
+        /// Instance will be resolved using Factory class.
+        /// Less strict verion of FromFactory that provides resolve-time validation but allows for dynamic logic in a factory.
+        /// </summary>
+        /// <typeparam name="TFactory">Factory</typeparam>
+        /// <typeparam name="T">Type being resolved</typeparam>
+        /// <returns></returns>
+        IBinding FromFactory<TFactory>() where TFactory : IFactory;
+
+        /// <summary>
+        /// T will be resolved using Factory class.
+        /// Generic version of FromFactory that provides more binding-time validation
         /// </summary>
         /// <typeparam name="TFactory">Factory</typeparam>
         /// <typeparam name="T">Type being resolved</typeparam>
         /// <returns></returns>
         IBinding FromFactory<TFactory, T>() where TFactory : IFactory<T>;
-
+        
         /// <summary>
-        /// T will be resolved using Factory Method
+        /// T will be resolved using Factory Method.
+        /// T will be validated a the binding time.
         /// </summary>
         /// <typeparam name="T">Type being resolved</typeparam>
         /// <param name="factoryMethod">Factory method</param>

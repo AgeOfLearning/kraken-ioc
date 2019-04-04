@@ -327,6 +327,36 @@ namespace AOFL.KrakenIoc.Testing
 
         #region Test 2 - DoesResolveSingleton
 
+        #region Interface & Implemenation
+        internal interface ISomeInterface { }
+
+        internal interface IAnotherInterface { }
+
+        internal class SomeTypeImplementsTwoInterfaces : ISomeInterface, IAnotherInterface
+        {
+
+        }
+
+        internal interface ISomeTypeNine
+        {
+            ISomeInterface Some { get; }
+            IAnotherInterface Another { get; }
+        }
+
+        internal class SomeTypeNine : ISomeTypeNine
+        {
+            public ISomeInterface Some { get; set; }
+            public IAnotherInterface Another { get; set; }
+
+            public SomeTypeNine(ISomeInterface some, IAnotherInterface another)
+            {
+                Some = some;
+                Another = another;
+            }
+        }
+
+        #endregion
+
         [TestMethod]
         public void DoesResolveSingleton()
         {
@@ -346,6 +376,33 @@ namespace AOFL.KrakenIoc.Testing
             ISomeTypeTwo twoTest2 = container.Resolve<ISomeTypeTwo>();
 
             Assert.AreEqual(one.Two, twoTest2);
+
+            container = null;
+        }
+
+        [TestMethod]
+        public void DoesResolveSingletonWhenMultipleInterfacesBound()
+        {
+            Container container = new Container();
+
+            // Transient & Singleton binding...
+            container.Bind<ISomeTypeNine>().To<SomeTypeNine>();
+            
+            container.Bind(typeof(ISomeInterface), typeof(IAnotherInterface)).To<SomeTypeImplementsTwoInterfaces>().AsSingleton();
+
+            // Resolve SomeTypeNine... should be injected
+            ISomeTypeNine consumer = container.Resolve<ISomeTypeNine>();
+
+            Assert.IsNotNull(consumer.Some, "did not inject ISomeInterface");
+            Assert.IsNotNull(consumer.Another, "did not inject IAnotherInterface");
+            Assert.AreEqual(consumer.Some, consumer.Another, "did not inject singleton");
+
+            // Resolve singleton
+            ISomeInterface some = container.Resolve<ISomeInterface>();
+            IAnotherInterface another = container.Resolve<IAnotherInterface>();
+
+            Assert.AreEqual(consumer.Some, some, "did not inject singleton");
+            Assert.AreEqual(consumer.Some, another, "did not inject singleton");
 
             container = null;
         }
@@ -722,12 +779,61 @@ namespace AOFL.KrakenIoc.Testing
             IInjectContext ItemInjectContext { get; }
         }
 
+        interface ISomeTypeImplementsTwoInterfacesFactory : IFactory<SomeTypeImplementsTwoInterfaces> { }
+
+        interface ISomeTypeImplementsTwoInterfacesNonGenericFactory : IFactory { }
+
+        interface ISomeTypeTest9FactoryNonGeneric : IFactory
+        {
+            int NumCreated { get; }
+            IInjectContext ItemInjectContext { get; }
+        }
+        
         class SomeTypeTest9Factory : Factory<ISomeTypeTest9>, ISomeTypeTest9Factory
         {
             public int NumCreated { get; set; }
             public IInjectContext ItemInjectContext { get; private set; }
 
             public override ISomeTypeTest9 Create(IInjectContext injectContext)
+            {
+                NumCreated++;
+                ItemInjectContext = injectContext;
+                return new SomeTypeTest9();
+            }
+        }
+
+        class SomeTypeImplementsTwoInterfacesFactory : Factory<SomeTypeImplementsTwoInterfaces>, ISomeTypeImplementsTwoInterfacesFactory
+        {
+            public int NumCreated { get; set; }
+            public IInjectContext ItemInjectContext { get; private set; }
+
+            public override SomeTypeImplementsTwoInterfaces Create(IInjectContext injectContext)
+            {
+                NumCreated++;
+                ItemInjectContext = injectContext;
+                return new SomeTypeImplementsTwoInterfaces();
+            }
+        }
+
+        class SomeTypeImplementsTwoInterfacesNonGenericFactory : ISomeTypeImplementsTwoInterfacesNonGenericFactory
+        {
+            public int NumCreated { get; set; }
+            public IInjectContext ItemInjectContext { get; private set; }
+
+            public object Create(IInjectContext injectContext)
+            {
+                NumCreated++;
+                ItemInjectContext = injectContext;
+                return new SomeTypeImplementsTwoInterfaces();
+            }
+        }
+
+        class SomeTypeTest9FactoryNonGeneric : ISomeTypeTest9FactoryNonGeneric
+        {
+            public int NumCreated { get; set; }
+            public IInjectContext ItemInjectContext { get; private set; }
+
+            public object Create(IInjectContext injectContext)
             {
                 NumCreated++;
                 ItemInjectContext = injectContext;
@@ -777,6 +883,98 @@ namespace AOFL.KrakenIoc.Testing
         }
 
         [TestMethod]
+        public void DoesResolveFromFactoryWhenMultipleInterfacesAreBoundAsTransient()
+        {
+            Container container = new Container();
+            var factory = new SomeTypeImplementsTwoInterfacesFactory();
+
+            container.Bind(typeof(ISomeInterface), typeof(IAnotherInterface))
+                .To<SomeTypeImplementsTwoInterfaces>()
+                .FromFactory<ISomeTypeImplementsTwoInterfacesFactory, SomeTypeImplementsTwoInterfaces>().AsTransient();
+
+            container.Bind<ISomeTypeImplementsTwoInterfacesFactory>(factory).To<SomeTypeImplementsTwoInterfacesFactory>().AsSingleton();
+
+            ISomeInterface someInterface = container.Resolve<ISomeInterface>();
+            IAnotherInterface anotherInterface = container.Resolve<IAnotherInterface>();
+            
+            Assert.AreEqual(2, factory.NumCreated, "did not resolve exactly twice using factory");
+        }
+
+        [TestMethod]
+        public void DoesResolveFromFactoryWhenMultipleInterfacesAreBoundAsSingleton()
+        {
+            Container container = new Container();
+            var factory = new SomeTypeImplementsTwoInterfacesFactory();
+
+            container.Bind(typeof(ISomeInterface), typeof(IAnotherInterface))
+                .To<SomeTypeImplementsTwoInterfaces>()
+                .FromFactory<ISomeTypeImplementsTwoInterfacesFactory, SomeTypeImplementsTwoInterfaces>().AsSingleton();
+
+            container.Bind<ISomeTypeImplementsTwoInterfacesFactory>(factory).To<SomeTypeImplementsTwoInterfacesFactory>().AsSingleton();
+
+            ISomeInterface someInterface = container.Resolve<ISomeInterface>();
+            IAnotherInterface anotherInterface = container.Resolve<IAnotherInterface>();
+
+            Assert.AreEqual(1, factory.NumCreated, "did not resolve exactly once using factory");
+
+            Assert.AreEqual(someInterface, anotherInterface, "Resolved interfaces do not point to the same object reference");
+        }
+
+        [TestMethod]
+        public void DoesResolveFromNonGenericFactory()
+        {
+            Container container = new Container();
+            ISomeTypeTest9FactoryNonGeneric factory = new SomeTypeTest9FactoryNonGeneric();
+
+            container.Bind<ISomeTypeTest9>().To<SomeTypeTest9>().FromFactory<ISomeTypeTest9FactoryNonGeneric>().AsTransient();
+            container.Bind<ISomeTypeTest9FactoryNonGeneric>(factory).To<SomeTypeTest9FactoryNonGeneric>().AsSingleton();
+
+            ISomeTypeTest9 someTypeTest9 = container.Resolve<ISomeTypeTest9>();
+
+            Assert.AreEqual(1, factory.NumCreated, "did not resolve using factory");
+        }
+        
+        [TestMethod]
+        public void DoesResolveFromNonGenericFactoryWhenMultipleInterfacesAreBoundAsTransient()
+        {
+            Container container = new Container();
+            var factory = new SomeTypeImplementsTwoInterfacesNonGenericFactory();
+
+            container.Bind(typeof(ISomeInterface), typeof(IAnotherInterface))
+                .To<SomeTypeImplementsTwoInterfaces>()
+                .FromFactory<ISomeTypeImplementsTwoInterfacesNonGenericFactory>()
+                .AsTransient();
+
+            container.Bind<ISomeTypeImplementsTwoInterfacesNonGenericFactory>(factory).To<SomeTypeImplementsTwoInterfacesNonGenericFactory>().AsSingleton();
+
+            ISomeInterface someInterface = container.Resolve<ISomeInterface>();
+            IAnotherInterface anotherInterface = container.Resolve<IAnotherInterface>();
+
+            Assert.AreEqual(2, factory.NumCreated, "did not resolve exactly twice using factory");
+        }
+
+        [TestMethod]
+        public void DoesResolveFromNonGenericFactoryWhenMultipleInterfacesAreBoundAsSingleton()
+        {
+            Container container = new Container();
+            var factory = new SomeTypeImplementsTwoInterfacesNonGenericFactory();
+
+            container.Bind(typeof(ISomeInterface), typeof(IAnotherInterface))
+                .To<SomeTypeImplementsTwoInterfaces>()
+                .FromFactory<ISomeTypeImplementsTwoInterfacesNonGenericFactory>()
+                .AsSingleton();
+
+            container.Bind<ISomeTypeImplementsTwoInterfacesNonGenericFactory>(factory).To<SomeTypeImplementsTwoInterfacesNonGenericFactory>().AsSingleton();
+
+            ISomeInterface someInterface = container.Resolve<ISomeInterface>();
+            IAnotherInterface anotherInterface = container.Resolve<IAnotherInterface>();
+
+            Assert.AreEqual(1, factory.NumCreated, "did not resolve exactly once using factory");
+
+            Assert.AreEqual(someInterface, anotherInterface, "Resolved interfaces do not point to the same object reference");
+        }
+        
+        [TestMethod]
         public void DoesResolveFromFactoryWithInheritedContainer()
         {
             Container parentContainer = new Container();
@@ -818,6 +1016,48 @@ namespace AOFL.KrakenIoc.Testing
             ISomeTypeTest9 someTypeTest9_B = container.Resolve<ISomeTypeTest9>();
 
             Assert.AreEqual(2, numResolved, "did not resolve twice");
+        }
+        
+        [TestMethod]
+        public void DoesResolveFromFactoryMethodWhenMultipleInterfacesAreBoundAsTransient()
+        {
+            Container container = new Container();
+
+            int numResolved = 0;
+
+            container.Bind(typeof(ISomeInterface), typeof(IAnotherInterface)).To<SomeTypeImplementsTwoInterfaces>().FromFactoryMethod(delegate (IInjectContext injectContext)
+            {
+                numResolved++;
+                return new SomeTypeImplementsTwoInterfaces();
+
+            }).AsTransient();
+
+            ISomeInterface someInterface = container.Resolve<ISomeInterface>();
+            IAnotherInterface anotherInterface = container.Resolve<IAnotherInterface>();
+
+            Assert.AreEqual(2, numResolved, "did not resolve exactly twice");
+            Assert.AreNotEqual(someInterface, anotherInterface, "two objects should not be equal");
+        }
+
+        [TestMethod]
+        public void DoesResolveFromFactoryMethodWhenMultipleInterfacesAreBoundAsSingleton()
+        {
+            Container container = new Container();
+
+            int numResolved = 0;
+
+            container.Bind(typeof(ISomeInterface), typeof(IAnotherInterface)).To<SomeTypeImplementsTwoInterfaces>().FromFactoryMethod(delegate (IInjectContext injectContext)
+            {
+                numResolved++;
+                return new SomeTypeImplementsTwoInterfaces();
+
+            }).AsSingleton();
+
+            ISomeInterface someInterface = container.Resolve<ISomeInterface>();
+            IAnotherInterface anotherInterface = container.Resolve<IAnotherInterface>();
+
+            Assert.AreEqual(1, numResolved, "did not resolve exactly once");
+            Assert.AreEqual(someInterface, anotherInterface, "two objects should be equal");
         }
 
         [TestMethod]
