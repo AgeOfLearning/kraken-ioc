@@ -14,7 +14,8 @@
     <description>$description$</description>
     <!--*-->
     <releaseNotes>
-      - Fixes binding incompatible types (both early and late binds)
+      - Implemented multi-contract bindings: Bind(typeof(IService), typeof(IMyService))
+      - Implemented non-generic factory bindings: FromFactory&lt;INonGenericFactory&gt;
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags> </tags>
