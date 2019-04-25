@@ -78,6 +78,12 @@ When abstractions are required, you can pass the implementation type to the `To`
 container.Bind<IWebService>().To<WebService>().AsSingleton();
 ```
 
+### Binding Multiple Interfaces to a single Implementation
+You can bind multiple interfaces to the same implementation. That way, you can have multiple interfaces referring to the same singleton:
+```csharp
+container.Bind(typeof(IWebService), typeof(IProductWebService), typeof(IWebConnectionService)).To<WebService>().AsSingleton();
+```
+
 ### Binding & Resolving with Categories
 It is often useful to map different types of implementations. You can do this with categories.
 ```csharp
@@ -106,6 +112,14 @@ container.Bind<WebService>().FromFactoryMethod((injectContext) => {
     return new WebService();
 });
 ```
+
+As an alternative, you can decide to bind a non-generic factory. This is useful when you bind multiple interfaces to one implementations.
+
+```csharp
+// From a factory type...
+container.Bind(typeof(IWebService), typeof(IProductWebService), typeof(IWebConnectionService)).To<WebService>().FromFactory<WebServiceFactory>().AsSingleton();
+```
+
 
 ### Bootstraps
 `Bootstrap`s provide a modular way to bind your services and features.

@@ -16,15 +16,47 @@ namespace AOFL.KrakenIoc.Core.V1
 
         public event Action<bool, IBinding, object> Resolved;
 
+        /// <summary>
+        /// Type of the binding - Transient vs Singleton
+        /// </summary>
         public BindingType BindingType { get; set; }
-        public Type BinderType { get; set; }
+
+        /// <summary>
+        /// Binder (contract/interface) types. 
+        /// Array of interfaces bound to one implementation
+        /// </summary>
+        public Type[] BinderTypes { get; set; }
+
+        /// <summary>
+        /// Bound (concrete) type
+        /// </summary>
         public Type BoundType { get; set; }
+
+        /// <summary>
+        /// Bound objects - values to resolve
+        /// </summary>
         public List<object> BoundObjects { get; set; }
+        
+        /// <summary>
+        /// Container
+        /// </summary>
         public IContainer Container { get; set; }
+
+        /// <summary>
+        /// Factory type - used when object is created FromFactory
+        /// </summary>
         public Type FactoryType { get; set; }
+
+        /// <summary>
+        /// Factory method delegate - used when object is created FromFactoryMethod
+        /// </summary>
         public FactoryMethod<object> FactoryMethod { get; set; }
 
+        /// <summary>
+        /// Cached factory instance
+        /// </summary>
         private IFactory _cachedFactory = null;
+
 
         public object Category
         {
@@ -36,7 +68,7 @@ namespace AOFL.KrakenIoc.Core.V1
             {
                 if (_category != null)
                 {
-                    throw new TypeCategoryAlreadyBoundException(BinderType, _category);
+                    throw new TypeCategoryAlreadyBoundException(BoundType, _category);
                 }
 
                 _category = value;
@@ -208,9 +240,12 @@ namespace AOFL.KrakenIoc.Core.V1
         /// <typeparam name="T">The concrete implementation type.</typeparam>
         public IBinding To<T>()
         {
-            if (!BinderType.IsAssignableFrom(typeof(T)))
+            foreach (var interfaceType in BinderTypes)
             {
-                throw new InvalidBindingException($"Can not bind ${BinderType} type to type {typeof(T)}, {typeof(T)} does not implement {BinderType}");
+                if (!interfaceType.IsAssignableFrom(typeof(T)))
+                {
+                    throw new InvalidBindingException($"Can not bind ${interfaceType} type to type {typeof(T)}, {typeof(T)} does not implement {interfaceType}");
+                }
             }
 
             BoundType = typeof(T);
@@ -220,7 +255,7 @@ namespace AOFL.KrakenIoc.Core.V1
 
         public void Inherit(IBinding binding)
         {
-            BinderType = binding.BinderType;
+            BinderTypes = binding.BinderTypes;
             BindingType = binding.BindingType;
             BoundType = binding.BoundType;
             Category = binding.Category;
@@ -233,7 +268,7 @@ namespace AOFL.KrakenIoc.Core.V1
 
         public void CloneFrom(IBinding binding)
         {
-            BinderType = binding.BinderType;
+            BinderTypes = binding.BinderTypes;
             BindingType = binding.BindingType;
             BoundType = binding.BoundType;
             Category = binding.Category;
@@ -247,29 +282,40 @@ namespace AOFL.KrakenIoc.Core.V1
 
             return this;
         }
-        
-        public IBinding FromFactory<TFactory, T>() where TFactory : IFactory<T>
+
+        public IBinding FromFactory<TFactory>() where TFactory : IFactory
         {
-            if(typeof(T) != BinderType)
+            if (FactoryMethod != null)
             {
-                throw new InvalidBindingException($"Can not bind ${BinderType} type to resolve from Factory of type ${typeof(TFactory)}");
+                throw new InvalidBindingException($"Can not bind with FromFactory, binding already uses FromFactoryMethod");
             }
-            
-            if(FactoryMethod != null)
-            {
-                throw new InvalidBindingException($"Can not bind with FromFactory, binding already uses FromMethod");
-            }
-            
+
             FactoryType = typeof(TFactory);
 
             return this;
         }
+        
+        public IBinding FromFactory<TFactory, T>() where TFactory : IFactory<T>
+        {
+            foreach(var interfaceType in BinderTypes)
+            {
+                if (!interfaceType.IsAssignableFrom(typeof(T)))
+                {
+                    throw new InvalidBindingException($"Can not bind ${interfaceType} type to resolve from Factory of type ${typeof(TFactory)}");
+                }
+            }
+
+            return FromFactory<TFactory>();
+        }
 
         public IBinding FromFactoryMethod<T>(FactoryMethod<T> factoryMethod)
         {
-            if(!BinderType.IsAssignableFrom(typeof(T)))
+            foreach (var interfaceType in BinderTypes)
             {
-                throw new InvalidBindingException($"Can not bind ${BinderType} type to resolve from Factory Method of type ${typeof(FactoryMethod<T>)}");
+                if (!interfaceType.IsAssignableFrom(typeof(T)))
+                {
+                    throw new InvalidBindingException($"Can not bind ${interfaceType} type to resolve from Factory Method of type ${typeof(FactoryMethod<T>)}");
+                }
             }
 
             if(FactoryType != null)

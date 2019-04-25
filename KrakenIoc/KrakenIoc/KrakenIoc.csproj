@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\V1\BindingCollection.cs" />
     <Compile Include="Core\V1\ConstructorInfoCache.cs" />
     <Compile Include="Core\V1\Factory.cs" />
     <Compile Include="Core\V1\Interfaces\IInjectContext.cs" />
@@ -65,7 +66,6 @@
     <Compile Include="Core\V1\ParameterInfoCache.cs" />
     <Compile Include="Core\V1\InjectContext.cs" />
     <Compile Include="Core\V1\Binding.cs" />
-    <Compile Include="Core\V1\BindingCollection.cs" />
     <Compile Include="Core\V1\BindingType.cs" />
     <Compile Include="Core\V1\ConstructorAttribute.cs" />
     <Compile Include="Core\V1\Container.cs" />

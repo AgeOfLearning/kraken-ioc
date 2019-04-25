@@ -19,6 +19,7 @@ namespace AOFL.KrakenIoc.Core.V1
         public LogHandler LogHandler { get; set; }
 
         public Container() { }
+
         public Container(IInjector injector)
         {
             Injector = injector;
@@ -105,7 +106,7 @@ namespace AOFL.KrakenIoc.Core.V1
 
             Binding binding = new Binding
             {
-                BinderType = typeof(T),
+                BinderTypes = new Type[] { typeof(T) },
                 BoundType = type,
                 Container = this
             };
@@ -113,7 +114,38 @@ namespace AOFL.KrakenIoc.Core.V1
             _bindings[typeof(T)].Add(binding);
 
             return binding;
-       
+        }
+
+        public IBinding Bind(params Type[] interfaceTypes)
+        {
+            if(interfaceTypes == null)
+            {
+                throw new InvalidBindingException($"Can not bind multiple interfaces, provided array of interface types is null");
+            }
+
+            if(interfaceTypes.Length == 0)
+            {
+                throw new InvalidBindingException($"Can not bind multiple interfaces, provided array of interface types is empty");
+            }
+
+            Binding binding = new Binding
+            {
+                BinderTypes = interfaceTypes,
+                BoundType = interfaceTypes[0], // By default, bind to a first interface type. Override using To<T> syntax
+                Container = this
+            };
+
+            foreach(var interfaceType in interfaceTypes)
+            {
+                if (!_bindings.ContainsKey(interfaceType))
+                {
+                    _bindings.Add(interfaceType, new BindingCollection());
+                }
+
+                _bindings[interfaceType].Add(binding);
+            }
+
+            return binding;
         }
 
         private void LogError(string format, params object[] args)
@@ -457,61 +489,66 @@ namespace AOFL.KrakenIoc.Core.V1
 
         private void AddInheritedBinding(Binding binding)
         {
-            if (!_inheritedBindings.ContainsKey(binding.BinderType))
+            foreach (var interfaceType in binding.BinderTypes)
             {
-                _inheritedBindings.Add(binding.BinderType, new BindingCollection());
-            }
-
-            var bindingCollection = _inheritedBindings[binding.BinderType];
-
-            IBinding existingBinding = bindingCollection.GetBindingWithCategory(binding.Category);
-
-            if (existingBinding == null)
-            {
-                bindingCollection.Add(binding);
-            }
-            else
-            {
-                if (binding.Category == null)
+                if (!_inheritedBindings.ContainsKey(interfaceType))
                 {
-                    throw new TypeAlreadyBoundException(binding.BinderType);
+                    _inheritedBindings.Add(interfaceType, new BindingCollection());
+                }
+
+                var bindingCollection = _inheritedBindings[interfaceType];
+
+                IBinding existingBinding = bindingCollection.GetBindingWithCategory(binding.Category);
+
+                if (existingBinding == null)
+                {
+                    bindingCollection.Add(binding);
                 }
                 else
                 {
-                    throw new TypeCategoryAlreadyBoundException(binding.BinderType, binding.Category);
+                    if (binding.Category == null)
+                    {
+                        throw new TypeAlreadyBoundException(interfaceType);
+                    }
+                    else
+                    {
+                        throw new TypeCategoryAlreadyBoundException(interfaceType, binding.Category);
+                    }
                 }
             }
         }
 
         private void AddClonedBinding(Binding binding)
         {
-            if (!_clonedBindings.ContainsKey(binding.BinderType))
+            foreach(var interfaceType in binding.BinderTypes)
             {
-                _clonedBindings.Add(binding.BinderType, new BindingCollection());
-            }
-
-            var bindingCollection = _clonedBindings[binding.BinderType];
-
-            IBinding existingBinding = bindingCollection.GetBindingWithCategory(binding.Category);
-
-            if (existingBinding == null)
-            {
-                bindingCollection.Add(binding);
-            }
-            else
-            {
-                if (binding.Category == null)
+                if (!_clonedBindings.ContainsKey(interfaceType))
                 {
-                    throw new TypeAlreadyBoundException(binding.BinderType);
+                    _clonedBindings.Add(interfaceType, new BindingCollection());
+                }
+
+                var bindingCollection = _clonedBindings[interfaceType];
+
+                IBinding existingBinding = bindingCollection.GetBindingWithCategory(binding.Category);
+
+                if (existingBinding == null)
+                {
+                    bindingCollection.Add(binding);
                 }
                 else
                 {
-                    throw new TypeCategoryAlreadyBoundException(binding.BinderType, binding.Category);
+                    if (binding.Category == null)
+                    {
+                        throw new TypeAlreadyBoundException(interfaceType);
+                    }
+                    else
+                    {
+                        throw new TypeCategoryAlreadyBoundException(interfaceType, binding.Category);
+                    }
                 }
             }
         }
-
-
+        
         public void Bootstrap<T>() where T : IBootstrap
         {
             Bootstrap(typeof(T));
@@ -523,5 +560,4 @@ namespace AOFL.KrakenIoc.Core.V1
             bootstrap?.SetupBindings(this);
         }
     }
-
 }

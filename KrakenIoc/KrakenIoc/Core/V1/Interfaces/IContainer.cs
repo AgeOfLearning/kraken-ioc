@@ -99,6 +99,14 @@ namespace AOFL.KrakenIoc.Core.V1.Interfaces
         IBinding Bind<T>(Type type);
 
         /// <summary>
+        /// Binds multiple interface types against the implementation
+        /// Type.
+        /// </summary>
+        /// <param name="interfaceTypes">Interface types</param>
+        /// <returns></returns>
+        IBinding Bind(params Type[] interfaceTypes);
+
+        /// <summary>
         /// Returns an instance of the specified type.
         /// </summary>
         /// <param name="type"></param>
