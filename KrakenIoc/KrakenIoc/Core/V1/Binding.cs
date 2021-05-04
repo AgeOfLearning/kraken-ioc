@@ -198,18 +198,20 @@ namespace AOFL.KrakenIoc.Core.V1
         /// <summary>
         /// Sets the lifetime scope of this binding to 'Singleton'.
         /// </summary>
-        public void AsSingleton()
+        public IBinding AsSingleton()
         {
             BindingType = BindingType.Singleton;
+            return this;
         }
 
         /// <summary>
         /// Sets the lifetime scope of this binding to 'Transient'. Returns
         /// a new instance every time it is resolved.
         /// </summary>
-        public void AsTransient()
+        public IBinding AsTransient()
         {
             BindingType = BindingType.Transient;
+            return this;
         }
 
         /// <summary>
