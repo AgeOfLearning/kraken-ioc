@@ -1,15 +1,11 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using AOFL.KrakenIoc.Core.V1.Interfaces;
 using AOFL.KrakenIoc.Core.V1;
-using UnityEngine;
-using System.Threading.Tasks;
 using AOFL.KrakenIoc.Core.V1.Exceptions;
-using System.Linq;
 
 namespace AOFL.KrakenIoc.Testing
 {
-    [TestClass]
     public class ContainerTests
     {
         #region Test 1 - DoesResolveType
@@ -82,7 +78,7 @@ namespace AOFL.KrakenIoc.Testing
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public void DoesResolveType()
         {
             Container container = new Container();
@@ -103,7 +99,7 @@ namespace AOFL.KrakenIoc.Testing
             container = null;
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveTypeWhenGenericBindUsed()
         {
             Container container = new Container();
@@ -124,7 +120,7 @@ namespace AOFL.KrakenIoc.Testing
             container = null;
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveTypeWithCategory()
         {
             Container container = new Container();
@@ -145,7 +141,7 @@ namespace AOFL.KrakenIoc.Testing
             container = null;
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveTypeWithCategoryUsingWithCategory()
         {
             Container container = new Container();
@@ -165,7 +161,7 @@ namespace AOFL.KrakenIoc.Testing
             container = null;
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveTypeWithObjectCategory()
         {
             Container container = new Container();
@@ -185,7 +181,7 @@ namespace AOFL.KrakenIoc.Testing
             container = null;
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveTypeWithObjectCategoryUsingPrimitiveInjectAttribute()
         {
             Container container = new Container();
@@ -205,7 +201,7 @@ namespace AOFL.KrakenIoc.Testing
             container = null;
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveTypeWithObjectCategoryUsingResolveWithCategory()
         {
             Container container = new Container();
@@ -221,7 +217,7 @@ namespace AOFL.KrakenIoc.Testing
             container = null;
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveTypeWhenCategoryIsSetAfterwards()
         {
             Container container = new Container();
@@ -231,16 +227,15 @@ namespace AOFL.KrakenIoc.Testing
             IBinding binding = container.Bind<ISomeTypeSeven>().To<SomeTypeSevenA>();
 
             ISomeTypeSeven sevenA = container.Resolve<ISomeTypeSeven>();
-            Assert.IsInstanceOfType(sevenA, typeof(SomeTypeSevenA));
+            Assert.IsAssignableFrom<SomeTypeSevenA>(sevenA);
 
             binding.WithCategory(category);
             
             ISomeTypeSeven sevenB = container.ResolveWithCategory<ISomeTypeSeven>(category);
-            Assert.IsInstanceOfType(sevenB, typeof(SomeTypeSevenA));
+            Assert.IsAssignableFrom<SomeTypeSevenA>(sevenB);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(MissingBindingException))]
+        [Test]
         public void DoesNotResolveTypeWithWhenCategoryIsSetAfterwards()
         {
             Container container = new Container();
@@ -250,15 +245,16 @@ namespace AOFL.KrakenIoc.Testing
             IBinding binding = container.Bind<ISomeTypeSeven>().To<SomeTypeSevenA>();
 
             ISomeTypeSeven sevenA = container.Resolve<ISomeTypeSeven>();
-            Assert.IsInstanceOfType(sevenA, typeof(SomeTypeSevenA));
+            Assert.IsAssignableFrom<SomeTypeSevenA>(sevenA);
 
             binding.WithCategory(category);
 
-            ISomeTypeSeven sevenB = container.Resolve<ISomeTypeSeven>();
+            Assert.Throws<MissingBindingException>(
+                () => { ISomeTypeSeven sevenB = container.Resolve<ISomeTypeSeven>(); }
+            );
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(TypeCategoryAlreadyBoundException))]
+        [Test]
         public void ThrowsExceptionWhenCategoryIsAlreadySet()
         {
             Container container = new Container();
@@ -269,13 +265,14 @@ namespace AOFL.KrakenIoc.Testing
             IBinding binding = container.Bind<ISomeTypeSeven>().To<SomeTypeSevenA>().WithCategory(categoryA);
 
             ISomeTypeSeven sevenA = container.ResolveWithCategory<ISomeTypeSeven>(categoryA);
-            Assert.IsInstanceOfType(sevenA, typeof(SomeTypeSevenA));
+            Assert.IsAssignableFrom<SomeTypeSevenA>(sevenA);
 
-            binding.WithCategory(categoryB);
+            Assert.Throws<TypeCategoryAlreadyBoundException>(
+                () => { binding.WithCategory(categoryB); }
+            );
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(TypeCategoryAlreadyBoundException))]
+        [Test]
         public void ThrowsExceptionWhenCategoryIsAlreadySet2()
         {
             Container container = new Container();
@@ -286,13 +283,14 @@ namespace AOFL.KrakenIoc.Testing
             IBinding binding = container.Bind<ISomeTypeSeven>().To<SomeTypeSevenA>().WithCategory(categoryA);
 
             ISomeTypeSeven sevenA = container.ResolveWithCategory<ISomeTypeSeven>(categoryA);
-            Assert.IsInstanceOfType(sevenA, typeof(SomeTypeSevenA));
+            Assert.IsAssignableFrom<SomeTypeSevenA>(sevenA);
 
-            binding.Category = categoryB;
+            Assert.Throws<TypeCategoryAlreadyBoundException>(
+                () => { binding.Category = categoryB; }
+            );
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(TypeCategoryAlreadyBoundException))]
+        [Test]
         public void ThrowsExceptionWhenCategoryIsRemoved()
         {
             Container container = new Container();
@@ -302,25 +300,31 @@ namespace AOFL.KrakenIoc.Testing
             IBinding binding = container.Bind<ISomeTypeSeven>().To<SomeTypeSevenA>().WithCategory(categoryA);
 
             ISomeTypeSeven sevenA = container.ResolveWithCategory<ISomeTypeSeven>(categoryA);
-            Assert.IsInstanceOfType(sevenA, typeof(SomeTypeSevenA));
+            Assert.IsAssignableFrom<SomeTypeSevenA>(sevenA);
 
-            binding.Category = null;
+            Assert.Throws<TypeCategoryAlreadyBoundException>(
+                () => { binding.Category = null; }
+            );
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidBindingException))]
+        [Test]
         public void ThrowsExceptionWhenEarlyBoundTypeDoesNotImplementBinderType()
         {
             Container container = new Container();
-            container.Bind<ISomeTypeSeven>(typeof(SomeTypeEightExtended));
+
+            Assert.Throws<InvalidBindingException>(
+                () => { container.Bind<ISomeTypeSeven>(typeof(SomeTypeEightExtended)); }
+            );
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidBindingException))]
+        [Test]
         public void ThrowsExceptionWhenLateBoundTypeDoesNotImplementBinderType()
         {
             Container container = new Container();
-            container.Bind<ISomeTypeSeven>().To<SomeTypeEightExtended>();
+
+            Assert.Throws<InvalidBindingException>(
+                () => { container.Bind<ISomeTypeSeven>().To<SomeTypeEightExtended>(); }
+            );
         }
 
         #endregion
@@ -357,7 +361,7 @@ namespace AOFL.KrakenIoc.Testing
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public void DoesResolveSingleton()
         {
             Container container = new Container();
@@ -380,7 +384,7 @@ namespace AOFL.KrakenIoc.Testing
             container = null;
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveSingletonWhenMultipleInterfacesBound()
         {
             Container container = new Container();
@@ -431,7 +435,7 @@ namespace AOFL.KrakenIoc.Testing
         }
         #endregion
 
-        [TestMethod]
+        [Test]
         public void DoesNotAllowConstructorCircularDependency()
         {
             Container container = new Container();
@@ -475,7 +479,7 @@ namespace AOFL.KrakenIoc.Testing
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public void DoesNotAllowPropertyInjectedCircularDependency()
         {
             Container container = new Container();
@@ -497,7 +501,7 @@ namespace AOFL.KrakenIoc.Testing
 
         #region Test 5 - DoesNotLeakMemory
 
-        //[TestMethod]
+        //[Test]
         public void DoesNotLeakMemory()
         {
             GC.Collect();
@@ -542,7 +546,7 @@ namespace AOFL.KrakenIoc.Testing
 
         #region Test 6 - DoesAllowCircularDependencyForSingletonPropertyInjection
 
-        [TestMethod]
+        [Test]
         public void DoesAllowCircularDependencyForSingletonPropertyInjection()
         {
             Container container = new Container();
@@ -576,7 +580,7 @@ namespace AOFL.KrakenIoc.Testing
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromInheritedContainer()
         {
             Container containerA = new Container();
@@ -594,7 +598,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(one.Two, two);
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromInheritedContainerWithMultipleLevelsOfInheritance()
         {
             Container containerA = new Container();
@@ -614,7 +618,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(one.Two, two);
         }
 
-        [TestMethod]
+        [Test]
         public void DoesInjectTransientFromInheritedContainer()
         {
             Container containerA = new Container();
@@ -629,7 +633,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.IsNotNull(one.Two, "two did not resolve");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesInjectTransientFromInheritedContainerWithMultipleLevelsOfInheritance()
         {
             Container containerA = new Container();
@@ -646,7 +650,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.IsNotNull(one.Two, "two did not resolve");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesNotInjectSingletonFromInheritedContainer()
         {
             Container containerA = new Container();
@@ -661,7 +665,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.IsNull(one.Two, "two did resolve");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesNotInjectSingletonFromInheritedContainerWithMultipleLevelsOfInheritance()
         {
             Container containerA = new Container();
@@ -678,7 +682,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.IsNull(one.Two, "two did not resolve");
         }
         
-        [TestMethod]
+        [Test]
         public void DoesResolveInheritedBinding()
         {
             Container container = new Container();
@@ -693,7 +697,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.IsNotNull(someTypeEightExtended);
         }
 
-        [TestMethod]
+        [Test]
         public void DoesDisposeWithInheritedBinding()
         {
             Container container = new Container();
@@ -704,7 +708,7 @@ namespace AOFL.KrakenIoc.Testing
             container.Dispose();
         }
 
-        [TestMethod]
+        [Test]
         public void DoesOverrideInheritedBindingWhenBoundAsTransient()
         {
             Container containerA = new Container();
@@ -718,10 +722,10 @@ namespace AOFL.KrakenIoc.Testing
             ISomeTypeOne one = containerB.Resolve<ISomeTypeOne>();
 
             Assert.IsNotNull(one.Two, "two did not resolve");
-            Assert.IsInstanceOfType(one.Two, typeof(AnotherTypeTwo), "ContainerB did not override inhjected type");
+            Assert.IsAssignableFrom<AnotherTypeTwo>(one.Two, "ContainerB did not override inhjected type");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesOverrideInheritedBindingWhenBoundAsSingleton()
         {
             Container containerA = new Container();
@@ -735,12 +739,12 @@ namespace AOFL.KrakenIoc.Testing
             ISomeTypeOne one = containerB.Resolve<ISomeTypeOne>();
 
             Assert.IsNotNull(one.Two, "two did not resolve");
-            Assert.IsInstanceOfType(one.Two, typeof(AnotherTypeTwo), "ContainerB did not override inhjected type");
+            Assert.IsAssignableFrom<AnotherTypeTwo>(one.Two, "ContainerB did not override inhjected type");
 
             ISomeTypeTwo two = containerB.Resolve<ISomeTypeTwo>();
 
             Assert.AreEqual(two, one.Two, "Did not resolve singleton instance");
-            Assert.IsInstanceOfType(two, typeof(AnotherTypeTwo), "ContainerB did not override inhjected type");
+            Assert.IsAssignableFrom<AnotherTypeTwo>(two, "ContainerB did not override inhjected type");
         }
         #endregion
 
@@ -754,7 +758,7 @@ namespace AOFL.KrakenIoc.Testing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void DoesBootstrapBindings()
         {
             Container container = new Container();
@@ -852,7 +856,7 @@ namespace AOFL.KrakenIoc.Testing
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactory()
         {
             Container container = new Container();
@@ -867,7 +871,7 @@ namespace AOFL.KrakenIoc.Testing
         }
 
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryAsSingleton()
         {
             Container container = new Container();
@@ -882,7 +886,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(1, factory.NumCreated, "did not resolve once"); // must not be 2
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryWhenMultipleInterfacesAreBoundAsTransient()
         {
             Container container = new Container();
@@ -900,7 +904,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(2, factory.NumCreated, "did not resolve exactly twice using factory");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryWhenMultipleInterfacesAreBoundAsSingleton()
         {
             Container container = new Container();
@@ -920,7 +924,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(someInterface, anotherInterface, "Resolved interfaces do not point to the same object reference");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromNonGenericFactory()
         {
             Container container = new Container();
@@ -934,7 +938,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(1, factory.NumCreated, "did not resolve using factory");
         }
         
-        [TestMethod]
+        [Test]
         public void DoesResolveFromNonGenericFactoryWhenMultipleInterfacesAreBoundAsTransient()
         {
             Container container = new Container();
@@ -953,7 +957,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(2, factory.NumCreated, "did not resolve exactly twice using factory");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromNonGenericFactoryWhenMultipleInterfacesAreBoundAsSingleton()
         {
             Container container = new Container();
@@ -974,7 +978,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(someInterface, anotherInterface, "Resolved interfaces do not point to the same object reference");
         }
         
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryWithInheritedContainer()
         {
             Container parentContainer = new Container();
@@ -998,7 +1002,7 @@ namespace AOFL.KrakenIoc.Testing
         }
 
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryMethod()
         {
             Container container = new Container();
@@ -1018,7 +1022,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(2, numResolved, "did not resolve twice");
         }
         
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryMethodWhenMultipleInterfacesAreBoundAsTransient()
         {
             Container container = new Container();
@@ -1039,7 +1043,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreNotEqual(someInterface, anotherInterface, "two objects should not be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryMethodWhenMultipleInterfacesAreBoundAsSingleton()
         {
             Container container = new Container();
@@ -1060,7 +1064,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(someInterface, anotherInterface, "two objects should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryMethodWithInheritedContainer()
         {
             int numResolved = 0;
@@ -1087,7 +1091,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(1, numResolved, "did not resolve");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryMethodAsSingleton()
         {
             Container container = new Container();
@@ -1159,7 +1163,7 @@ namespace AOFL.KrakenIoc.Testing
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryWithInjectContext()
         {
             Container container = new Container();
@@ -1176,7 +1180,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(otherConsumer.Provider.ConsumerType, typeof(SomeOtherConsumer), "Incorrect consumer type");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFromFactoryMethodWithInjectContext()
         {
             Container container = new Container();
@@ -1211,7 +1215,7 @@ namespace AOFL.KrakenIoc.Testing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveFunc()
         {
             var container = new Container();
@@ -1238,7 +1242,7 @@ namespace AOFL.KrakenIoc.Testing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveDelegateTypes()
         {
             var container = new Container();
@@ -1267,7 +1271,7 @@ namespace AOFL.KrakenIoc.Testing
             public T2 SomeValue2 { get; set; }
         }
 
-        [TestMethod]
+        [Test]
         public void DoesResolveGenericInterface()
         {
             Container container = new Container();
@@ -1280,7 +1284,7 @@ namespace AOFL.KrakenIoc.Testing
         #endregion
 
         #region Test 12 - HasBinding
-        [TestMethod]
+        [Test]
         public void HasBinding()
         {
             Container container = new Container();
@@ -1290,7 +1294,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.IsTrue(container.HasBindingFor(typeof(ISomeTypeOne)), "does not have binding");
         }
 
-        [TestMethod]
+        [Test]
         public void HasBindingForCategory()
         {
             object category = "category";
@@ -1358,7 +1362,7 @@ namespace AOFL.KrakenIoc.Testing
         }
         #endregion
 
-        [TestMethod]
+        [Test]
         public void DoesInjectIntoConstructorWithCategory()
         {
             Container container = new Container();
@@ -1371,7 +1375,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(typeof(Test13_ServiceImplementation2), consumer.Service.GetType(), "resolved with incorrect type");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesInjectIntoConstructorMethodWithCategory()
         {
             Container container = new Container();
@@ -1384,7 +1388,7 @@ namespace AOFL.KrakenIoc.Testing
             Assert.AreEqual(typeof(Test13_ServiceImplementation2), consumer.Service.GetType(), "resolved with incorrect type");
         }
 
-        [TestMethod]
+        [Test]
         public void DoesInjectIntoMethodWithCategory()
         {
             Container container = new Container();

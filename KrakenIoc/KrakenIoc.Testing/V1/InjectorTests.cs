@@ -1,6 +1,6 @@
 ﻿using System;
+using NUnit.Framework;
 using AOFL.KrakenIoc.Core.V1;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AOFL.KrakenIoc.Testing.V1
 {
@@ -53,10 +53,9 @@ namespace AOFL.KrakenIoc.Testing.V1
 
     #endregion
 
-    [TestClass]
     public class InjectorTests
     {
-        [TestMethod]
+        [Test]
         public void Injector_DoesNotThrowException_WhenNoConstructor()
         {
             var container = new Container();
@@ -69,7 +68,7 @@ namespace AOFL.KrakenIoc.Testing.V1
             container.Injector.Inject(result);
         }
 
-        [TestMethod]
+        [Test]
         public void Injector_DoesNotThrowException_WhenPrivateConstructor()
         {
             var container = new Container();
@@ -80,7 +79,7 @@ namespace AOFL.KrakenIoc.Testing.V1
             Assert.IsNotNull(result);
         }
 
-        [TestMethod]
+        [Test]
         public void Injector_DoesNotThrowException_WhenMultipleConstructors()
         {
             var container = new Container();
@@ -91,7 +90,7 @@ namespace AOFL.KrakenIoc.Testing.V1
             Assert.IsNotNull(result);
         }
 
-        [TestMethod]
+        [Test]
         public void Injector_DoesNotThrowException_WhenPublicPropertyInjectedOnBaseType()
         {
             var container = new Container();
@@ -104,7 +103,7 @@ namespace AOFL.KrakenIoc.Testing.V1
             Assert.IsNotNull(client.InjectedInstance, "Injected public property (from base type) is null on base type instance.");
         }
         
-        [TestMethod]
+        [Test]
         public void Injector_DoesNotThrowException_WhenPublicPropertyInjectedOnDerivedType()
         {
             var container = new Container();
@@ -117,7 +116,7 @@ namespace AOFL.KrakenIoc.Testing.V1
             Assert.IsNotNull(client.InjectedInstance, "Injected public property (from base type) is null on derived type instance.");
         }
         
-        [TestMethod]
+        [Test]
         public void Injector_DoesNotThrowException_WhenPrivatePropertyInjectedOnBaseType()
         {
             var container = new Container();
@@ -130,7 +129,7 @@ namespace AOFL.KrakenIoc.Testing.V1
             Assert.IsNotNull(client.InjectedInstance, "Injected private property (from base type) is null on base type instance.");
         }
 
-        [TestMethod]
+        [Test]
         public void Injector_DoesNotThrowException_WhenPrivatePropertyInjectedOnDerivedType()
         {
             var container = new Container();
