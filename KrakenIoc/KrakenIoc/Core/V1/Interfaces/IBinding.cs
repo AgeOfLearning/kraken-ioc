@@ -103,11 +103,11 @@ namespace AOFL.KrakenIoc.Core.V1.Interfaces
         /// <summary>
         /// Maps a single-instance binding.
         /// </summary>
-        IBinding AsSingleton();
+        void AsSingleton();
         /// <summary>
         /// Maps a multiple-instance binding.
         /// </summary>
-        IBinding AsTransient();
+        void AsTransient();
 
         /// <summary>
         /// Treats this binding as a proxy to the inherited one.
