@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-		<PackageId>Kraken.Testing</PackageId>
+		<PackageId>KrakenIoc.Testing</PackageId>
 		<Version>2.1.0</Version>
 		<Authors>Age of Learning</Authors>
 		<Company>Age of Learning</Company>
-		<Product>Kraken.Testing</Product>
-		<Description></Description>
+		<Product>KrakenIoc.Testing</Product>
+		<Description>Contains tests for KrakenIoc to verify it works as intended.</Description>
 		<Copyright>Copyright ©  2017</Copyright>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/AgeOfLearning/kraken-ioc/</RepositoryUrl>

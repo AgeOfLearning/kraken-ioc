@@ -7,7 +7,7 @@
     <Authors>Age of Learning</Authors>
     <Company>Age of Learning</Company>
     <Product>KrakenIoc</Product>
-    <Description>Inversion of Control for Unity</Description>
+    <Description>A library containing Inversion of Control that's compatible with Unity (game engine).</Description>
     <Copyright>Copyright ©  2017</Copyright>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/AgeOfLearning/kraken-ioc/</RepositoryUrl>
