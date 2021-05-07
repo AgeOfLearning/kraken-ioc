@@ -58,7 +58,7 @@ namespace AOFL.KrakenIoc.Extensions.V1
 
         private static bool IsAnonymousMethod(MethodInfo methodInfo)
         {
-            return methodInfo.DeclaringType == null || !CodeGenerator.IsValidLanguageIndependentIdentifier(methodInfo.N‌​ame);
+            return methodInfo.DeclaringType == null || methodInfo.N‌​ame[0] == '<';
         }
     }
 }
